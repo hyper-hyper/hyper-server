@@ -1,0 +1,14 @@
+{
+  "name": "template",
+  "version": "0.0.0",
+  "author": "",
+  "private": "true",
+  "scripts": {
+    "dev": "bun run ./server.ts --hot",
+    "build": "bun build ./server.ts --outdir ./dist"
+  },
+  "dependencies": {
+    "bun": "^1.0.22",
+    "bun-types": "^1.0.22"
+  }
+}

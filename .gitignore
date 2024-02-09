@@ -1,0 +1,12 @@
+.build
+.cache
+.env
+.target
+.yarn
+*.local
+*.log
+build
+bun.lockb
+dist
+node_modules
+target
