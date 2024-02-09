@@ -1,3 +1,5 @@
-# Opinionated repository template
+# The `@hyper-hyper/hyper-server` repo
 
-Could be standalone or used within monorepo template.
+Simple web server to serve static files built with Bun.
+
+...
