@@ -5,7 +5,6 @@
     "module": "ESNext",
     "moduleDetection": "force",
     "allowJs": true,
-    "moduleResolution": "Bundler",
     "allowImportingTsExtensions": true,
     "noEmit": true,
     "skipLibCheck": true,
@@ -13,8 +12,6 @@
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["bun-types"],
-    "paths": {
-      "@/*": ["./src/*"]
-    }
+    "baseUrl": "."
   }
 }
