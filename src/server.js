@@ -5,67 +5,53 @@ import { join } from "path";
 const PUBLIC_DIR = join(process.env.PUBLIC_DIR ?? process.cwd(), "src");
 
 // Hot-reload  command
-const HOT_CMD = "/hot";
+const RELOAD_CMD = "/hot";
 
 // Start a server
 const server = serve({
-  websocket: {
-    open: (ws) => {
-      console.log("Client connected");
-
-    },
-    message: (ws, message) => {
-      console.log("Client sent message", message);
-
-    },
-    close: (ws) => {
-      console.log("Client disconnected");
-      
-    },
-  },
-
   fetch(request, server) {
-    console.log(server);
-    // URL
+    console.log(`${request.method} ${(new URL(request.url)).pathname}`);
     const url = new URL(request.url);
-    
-    // Log request
-    console.log(`${request.method} ${(new URL(request.url)).pathname} from ${(server.requestIP(request)).address}`);
-    
-    if (url.pathname.endsWith(HOT_CMD)) {
-      const upgraded = server.upgrade(request);
-      if (!upgraded) {
-        return new Response("Upgrade failed", { status: 400 });
+    if(url.pathname.endsWith(RELOAD_CMD)) {
+      if(server.upgrade(request)) {
+        return new Response(`${RELOAD_CMD}`, { status: 101 });
+      }
+      else {
+        return new Response("Bad Request", { status: 400 });
       }
     }
-
-    // Construct the file path
     let filePath = join(PUBLIC_DIR, url.pathname);
-    
-    // Default to index.html if the request is for a directory
     if (url.pathname.endsWith("/")) {
       filePath = join(filePath, "index.html");
     }
-
     try {
-      // Read the file from the file system
       const file = Bun.file(filePath);
-
-      // Return the file contents
       return new Response(file, {
-        headers: {
-          "Content-Type": file.type,
-        },
+        headers: { 
+          "Content-Type": file.type
+        }
       });
-    } catch (error) {
-      // If the file is not found, return a 404 response
-      if (error.code === "ENOENT") {
+    }
+    catch(error) {
+      console.log("ERROR: ", error);
+      if(ENOENT === error.code) {
         return new Response("Not Found", { status: 404 });
       }
-
-      // For any other errors, return a 500 response
       return new Response("Internal Server Error", { status: 500 });
     }
+  },
+
+  websocket: {
+    open: (ws) => {
+      console.log("Client connected:", ws);
+    },
+    message: (ws, message) => {
+      console.log("Client sent message", message);
+      ws.send(message);
+    },
+    close: (ws) => {
+      console.log("Client disconnected:", ws);
+    },
   },
 
   // Hostname
