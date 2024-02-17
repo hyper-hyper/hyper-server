@@ -4,6 +4,7 @@
   "description": "Simple web server to serve static content built powered by Bun.",
   "author": "Mikita Stankiewicz <itsmikita@gmail.com>",
   "private": "true",
+  "type": "module",
   "main": "index.js",
   "bin": {
     "hyper-server": "./bin/hyper-server"
