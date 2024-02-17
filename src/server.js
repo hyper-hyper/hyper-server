@@ -1,70 +1,82 @@
-import { serve } from "bun";
-import { join } from "path";
+import * as Bun from "bun";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as util from "node:util";
 
-// Define the directory where your static files are located
-const PUBLIC_DIR = join(process.env.PUBLIC_DIR ?? process.cwd(), "src");
+// const { values } = util.parseArgs({
+//   args: process.argv.slice(2),
+//   options: {
+//     hot: { type: "boolean" },
+//     publicDir: { type: "string" },
+//     hostname: { type: "string" },
+//     port: { type: "string", default: process.env.PORT }
+//   }
+// });
 
-// Hot-reload  command
-const RELOAD_CMD = "/hot";
+/** Reload command */
+export const HOT_CMD = "/hot";
 
-// Start a server
-const server = serve({
-  fetch(request, server) {
-    console.log(`${request.method} ${(new URL(request.url)).pathname}`);
-    const url = new URL(request.url);
-    if(url.pathname.endsWith(RELOAD_CMD)) {
-      if(server.upgrade(request)) {
-        return new Response(`${RELOAD_CMD}`, { status: 101 });
-      }
-      else {
-        return new Response("Bad Request", { status: 400 });
-      }
-    }
-    let filePath = join(PUBLIC_DIR, url.pathname);
-    if (url.pathname.endsWith("/")) {
-      filePath = join(filePath, "index.html");
-    }
+/** Public directory */
+export const PUBLIC_DIR = process.env.PUBLIC_DIR ?? path.join(process.cwd(), "src");
+
+/** Server port */
+export const PORT = process.env.PORT ?? 8080;
+
+/** Watch files for change */
+export const watcher = fs.watch(
+  PUBLIC_DIR,
+  { recursive: true },
+  (eventType, filePath) => {
+    console.log(`FSWatcher: '${eventType}' on '${filePath}'`);
+    server.publish(HOT_CMD, `File '${filePath}' fired '${eventType}' event. You have to reload!`);
+  }
+);
+
+/** Serve files */
+export const server = Bun.serve({
+  fetch: (request, server) => {
     try {
-      const file = Bun.file(filePath);
-      return new Response(file, {
-        headers: { 
-          "Content-Type": file.type
+      if(request.url.endsWith(HOT_CMD)) {
+        console.log(`Server: Got '${HOT_CMD}' request, trying to upgrade...`)
+        if(!server.upgrade(request)) {
+          console.log(`Server: Upgrade failed...`);
+          throw new Error("Upgrade Failed");
         }
-      });
+      }
+      const requestPath = new URL(request.url).pathname;
+      let filePath = path.join(PUBLIC_DIR, requestPath);
+      if(request.url.endsWith("/")) {
+        filePath = `${filePath}index.html`;
+      }
+      console.log(`Resolved request path: ${filePath}`);
+      if(fs.existsSync(filePath)) {
+        const file = Bun.file(filePath);
+        return new Response(file, { headers: { "Content-Type": file.type } });
+      }
     }
     catch(error) {
-      console.log("ERROR: ", error);
-      if(ENOENT === error.code) {
+      console.log(error);
+      if("ENOENT" === error.code) {
         return new Response("Not Found", { status: 404 });
       }
       return new Response("Internal Server Error", { status: 500 });
     }
   },
-
+  hostname: "0.0.0.0",
+  port: PORT,
   websocket: {
     open: (ws) => {
-      console.log("Client connected:", ws);
+      console.log(`WebSocket: Client connected. Subscribe to '${HOT_CMD}'`);
+      ws.subscribe(HOT_CMD);
     },
     message: (ws, message) => {
-      console.log("Client sent message", message);
-      ws.send(message);
+      console.log(`WebSocket: Client trying to communicate: `, ws, message);
     },
     close: (ws) => {
-      console.log("Client disconnected:", ws);
-    },
-  },
-
-  // Hostname
-  hostname: process.env.HOSTNAME ?? "0.0.0.0",
-
-  // Port
-  port: process.env.PORT ?? "8080",
-
-  // Add the SSL options to enable HTTPS
-  tls: {
-    cert: process.env.SSL_CERT ?? "",
-    key: process.env.SSL_KEY ?? ""
+      console.log(`WebSocket: Client disconnected...`);
+      ws.unsubscribe(HOT_CMD);
+    }
   }
 });
 
-console.log(`Server running at ${server.protocol}://localhost:${server.port}`);
+console.log(`Started Web Server at:\n\n${server.protocol}://127.0.0.1:${server.port}\n\n`);
