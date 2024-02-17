@@ -15,10 +15,11 @@
   },
   "scripts": {
     "dev": "bun ./src/server.js --hot",
-    "build": "bun build ./src/server.js --outdir ./dist"
+    "build": "bun build ./src/server.js --compile --outfile bin/hyper-server"
   },
   "dependencies": {
     "bun": "^1.0.26",
-    "bun-types": "^1.0.26"
+    "bun-types": "^1.0.26",
+    "commander": "^12.0.0"
   }
 }
