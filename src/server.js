@@ -4,38 +4,38 @@ import { join } from "node:path";
 import { program } from "commander";
 import * as pkg from "../package.json";
 
+// if(existsSync(join(process.cwd(), "./hyper.config.js"))) {
+//   console.log("Found hyper.config.js");
+//   const config = await import(join(process.cwd(), "./hyper.config.js"));
+// }
+
 program
   .version(pkg.version)
-  .option("--hot", "Wether to watch for changes in the served folder.", false)
-  .option("-h, --hostname <hostname>", "Server's hostname. When '0.0.0.0' serve both localhost and to local network.", "localhost")
-  .option("-p, --port <port>", "The port to listen to. Needs sudo to assign ports below 3000.", 8080)
-  .option("-d, --dir <dir>", "The folder to serve.", ".")
-  // .argument("<dir>", "Folder to serve. Defaults to current folder.", ".")
+  .option("--hot", "Enable hot-reloading.", false)
+  .option("-h, --hostname <hostname>", "Server's hostname. When `0.0.0.0` serve both localhost and to local network.", process.env.HOSTNAME || "localhost")
+  .option("-p, --port <port>", "Port to listen to. Needs sudo to assign ports below 3000.", process.env.PORT || 3000)
+  .option("-r, --root <root>", "Document root folder to serve.", process.env.ROOT || process.cwd())
+  //.argument("<root>", "Folder to serve. Defaults to current working directory.", process.cwd())
   .parse(process.argv);
 
 const opts = program.opts();
 // const args = program.args();
 
-if(existsSync("./hyper.config.js")) {
-  console.log("Found hyper.config.js");
-  const config = import("./hyper.config.js");
-}
-
-/** Public directory to serve */
-const PUBLIC_DIR = join(process.cwd(), opts.dir || "dir" in config && config.dir || process.env.PUBLIC_DIR || ".");
+/** Hot-Reload command */
+export const HOT_CMD = "/hot";
 
 /** Hostname */
-const HOSTNAME = opts.hostname || process.env.HOSTNAME || "localhost";
+export const HOSTNAME = opts.hostname;
 
 /** Server port */
-const PORT = opts.port || process.env.PORT || 8080;
+export const PORT = opts.port;
 
-/** Hot-Reload command */
-const HOT_CMD = "/hot";
+/** Public directory to serve */
+export const ROOT = opts.root;
 
 /** Watch files for change */
-const watcher = opts.hot && watch(
-  PUBLIC_DIR,
+export const watcher = opts.hot && watch(
+  ROOT,
   { recursive: true },
   (eventType, filePath) => {
     console.log(`FSWatcher: '${eventType}' on '${filePath}'`);
@@ -43,35 +43,46 @@ const watcher = opts.hot && watch(
   }
 );
 
-/** Serve files */
+/** Start Server */
 export const server = Bun.serve({
-  fetch: (request, server) => {
-    try {
-      const requestPath = new URL(request.url).pathname;
-      console.log(`${request.method} ${requestPath}`);
-      if(request.url.endsWith(HOT_CMD)) {
-        console.log(`Server: Got '${HOT_CMD}' request, trying to upgrade...`)
-        if(!server.upgrade(request)) {
-          console.log(`Server: Upgrade failed...`);
-          throw new Error("Upgrade Failed");
-        }
-      }
-      let filePath = join(PUBLIC_DIR, requestPath);
+  fetch: async (request, server) => {
+    const requestPath = new URL(request.url).pathname;
+    console.log(`${request.method} ${requestPath}`);
+    if(opts.hot && request.url.endsWith(HOT_CMD)) {
+      console.log(`Server: Got '${HOT_CMD}' request, trying to upgrade...`)
+    }
+    else {
+      let filePath = join(ROOT, requestPath);
       if(request.url.endsWith("/")) {
         filePath = `${filePath}index.html`;
       }
-      if(existsSync(filePath)) {
-        const file = Bun.file(filePath);
-        return new Response(file, { headers: { "Content-Type": file.type } });
+      const file = Bun.file(filePath);
+      if(opts.hot && file.type.startsWith("text/html")) {
+        return new Response(
+          new HTMLRewriter().on("head", {
+            element(head) {
+              head.append(
+                `<script>
+                  const socket = new WebSocket("ws://${HOSTNAME}:${PORT}${HOT_CMD}");
+                  socket.addEventListener("message", event => window.location.reload());
+                </script>`,
+                { html: true }
+              );
+            }
+          }).transform(await file.text()),
+          {
+            headers: { "Content-Type": file.type }
+          }
+        );
       }
+      return new Response(file, {headers:{"Content-Type": file.type}});  
     }
-    catch(error) {
-      console.log(error);
-      if("ENOENT" === error.code) {
-        return new Response("Not Found", { status: 404 });
-      }
-      return new Response("Internal Server Error", { status: 500 });
+  },
+  error: (error) => {
+    if("ENOENT" === error.code) {
+      return new Response("404 - Not Found", { status: 404 });
     }
+    return new Response("500 - Internal Server Error", { status: 500 });
   },
   hostname: HOSTNAME,
   port: PORT,
