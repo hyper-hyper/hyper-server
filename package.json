@@ -1,6 +1,6 @@
 {
   "name": "@hyper-hyper/hyper-server",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Simple web server to serve static content built powered by Bun.",
   "author": "Mikita Stankiewicz <itsmikita@gmail.com>",
   "private": "true",

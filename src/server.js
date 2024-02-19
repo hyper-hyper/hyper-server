@@ -47,36 +47,35 @@ export const watcher = opts.hot && watch(
 export const server = Bun.serve({
   fetch: async (request, server) => {
     const requestPath = new URL(request.url).pathname;
-    console.log(`${request.method} ${requestPath}`);
+    console.log(`\n${request.method} ${requestPath}`);
     if(opts.hot && request.url.endsWith(HOT_CMD)) {
-      console.log(`Server: Got '${HOT_CMD}' request, trying to upgrade...`)
+      console.log(`Server: Got '${HOT_CMD}' request, trying to upgrade...`);
+      return server.upgrade(request);
     }
-    else {
-      let filePath = join(ROOT, requestPath);
-      if(request.url.endsWith("/")) {
-        filePath = `${filePath}index.html`;
-      }
-      const file = Bun.file(filePath);
-      if(opts.hot && file.type.startsWith("text/html")) {
-        return new Response(
-          new HTMLRewriter().on("head", {
-            element(head) {
-              head.append(
-                `<script>
-                  const socket = new WebSocket("ws://${HOSTNAME}:${PORT}${HOT_CMD}");
-                  socket.addEventListener("message", event => window.location.reload());
-                </script>`,
-                { html: true }
-              );
-            }
-          }).transform(await file.text()),
-          {
-            headers: { "Content-Type": file.type }
+    let filePath = join(ROOT, requestPath);
+    if(request.url.endsWith("/")) {
+      filePath = `${filePath}index.html`;
+    }
+    const file = Bun.file(filePath);
+    if(opts.hot && file.type.startsWith("text/html")) {
+      return new Response(
+        new HTMLRewriter().on("head", {
+          element(head) {
+            head.append(
+              `<script>
+                const socket = new WebSocket("ws://${HOSTNAME}:${PORT}${HOT_CMD}");
+                socket.addEventListener("message", event => window.location.reload());
+              </script>`,
+              { html: true }
+            );
           }
-        );
-      }
-      return new Response(file, {headers:{"Content-Type": file.type}});  
+        }).transform(await file.text()),
+        {
+          headers: { "Content-Type": file.type }
+        }
+      );
     }
+    return new Response(file, {headers:{"Content-Type": file.type}});
   },
   error: (error) => {
     if("ENOENT" === error.code) {
