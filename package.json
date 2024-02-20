@@ -22,8 +22,8 @@
     "build": "bun build ./src/server.js --compile --minify --outfile bin/hyper-server"
   },
   "dependencies": {
-    "bun": "^1.0.26",
-    "bun-types": "^1.0.26",
+    "bun": "^1.0.28",
+    "bun-types": "^1.0.28",
     "commander": "^12.0.0"
   }
 }
