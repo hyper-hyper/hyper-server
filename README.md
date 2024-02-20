@@ -18,16 +18,26 @@ Simple web server to serve static files from ONE assigned root-directory.
 
 ## Options
 
-You can run `hyper-server --help` to view this table:
+You can run `hyper-server --help` to see the help wizard.
 
 | Option | Default  | Description
 | - | - | -
-| `--hot` | `false` | Enable hot-reloading.
+| `--hot` | `false` | Enable hot-reloading. Injects client-side script automatically.
 | `--root`, `-r` | `.` | Document root folder to serve
 | `--hostname`, `-h` | `localhost` | Server's hostname. When `0.0.0.0` serve both localhost and to local network.
 | `--port`, `-p` | `3000` | Port to listen to. Needs sudo to assign ports below 3000.
+
+## Features/Todo
+
+- [x] Hot-reloading (inject client script)
+- [ ] Server configuration file
+- [ ] SSL support
+- [ ] Service Workers
+- [ ] Production mode
 
 ## Resources
 
 * `Bun.serve` - <https://bun.sh/docs/api/http>
 * `HTMLRewriter` - <https://developers.cloudflare.com/workers/runtime-apis/html-rewriter/>
+* `Commander.js` - <https://github.com/tj/commander.js>
+

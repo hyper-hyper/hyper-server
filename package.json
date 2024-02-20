@@ -1,8 +1,12 @@
 {
   "name": "@hyper-hyper/hyper-server",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Simple web server to serve static content built powered by Bun.",
-  "author": "Mikita Stankiewicz <itsmikita@gmail.com>",
+  "author": {
+    "name": "Mikita Stankiewicz",
+    "email": "itsmikita@gmail.com",
+    "url": "https://github.com/itsmikita"
+  },
   "private": "true",
   "type": "module",
   "main": "index.js",
@@ -11,11 +15,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyper-hyper/hyper-server-git"
+    "url": "https://github.com/hyper-hyper/hyper-server.git"
   },
   "scripts": {
-    "dev": "bun ./src/server.js --hot",
-    "build": "bun build ./src/server.js --compile --outfile bin/hyper-server"
+    "dev": "bun ./src/server.js --hot --hostname 127.0.0.1 --port 3000 --root ./src",
+    "build": "bun build ./src/server.js --compile --minify --outfile bin/hyper-server"
   },
   "dependencies": {
     "bun": "^1.0.26",

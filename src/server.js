@@ -49,7 +49,7 @@ export const server = Bun.serve({
     const requestPath = new URL(request.url).pathname;
     console.log(`\n${request.method} ${requestPath}`);
     if(opts.hot && request.url.endsWith(HOT_CMD)) {
-      console.log(`Server: Got '${HOT_CMD}' request, trying to upgrade...`);
+      console.log(`Server: Got '${HOT_CMD}' request, upgrading...`);
       return server.upgrade(request);
     }
     let filePath = join(ROOT, requestPath);
@@ -75,7 +75,7 @@ export const server = Bun.serve({
         }
       );
     }
-    return new Response(file, {headers:{"Content-Type": file.type}});
+    return new Response(file, { headers: { "Content-Type": file.type } });
   },
   error: (error) => {
     if("ENOENT" === error.code) {
@@ -87,17 +87,17 @@ export const server = Bun.serve({
   port: PORT,
   websocket: {
     open: (ws) => {
-      console.log(`WebSocket: Client connected. Subscribe to '${HOT_CMD}'`);
       ws.subscribe(HOT_CMD);
+      console.log(`WebSocket: Client subscribed to '${HOT_CMD}'`);
     },
     message: (ws, message) => {
-      console.log(`WebSocket: Client trying to communicate: `, ws, message);
+      console.log(`WebSocket: Client trying to communicate: `, message);
     },
     close: (ws) => {
-      console.log(`WebSocket: Client disconnected...`);
       ws.unsubscribe(HOT_CMD);
+      console.log(`WebSocket: Client disconnected...`);
     }
   }
 });
 
-console.log(`Started Web Server at: ${server.protocol}://${server.hostname}:${server.port}\n`);
+console.log(`\nStarted Web Server at: ${server.protocol}://${server.hostname}:${server.port}\n`);
