@@ -24,13 +24,13 @@ You can run `hyper-server --help` to see the help wizard.
 | - | - | -
 | `--hot` | `false` | Enable hot-reloading. Injects client-side script automatically.
 | `--root`, `-r` | `.` | Document root folder to serve
-| `--hostname`, `-h` | `localhost` | Server's hostname. When `0.0.0.0` serve both localhost and to local network.
+| `--hostname`, `-h` | `0.0.0.0` | Server's hostname. When `0.0.0.0` serve both localhost and to local network.
 | `--port`, `-p` | `3000` | Port to listen to. Needs sudo to assign ports below 3000.
 
 ## Features/Todo
 
 - [x] Hot-reloading (inject client script)
-- [ ] Server configuration file
+- [x] Server configuration file
 - [ ] SSL support
 - [ ] Service Workers
 - [ ] Production mode

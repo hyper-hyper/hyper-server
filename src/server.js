@@ -1,25 +1,28 @@
 #!/usr/bin/env node
+import { $ } from "bun";
 import { existsSync, watch } from "node:fs";
-import { join } from "node:path";
+import { join, resolve } from "node:path";
 import { program } from "commander";
 import * as pkg from "../package.json";
 
-// if(existsSync(join(process.cwd(), "./hyper.config.js"))) {
-//   console.log("Found hyper.config.js");
-//   const config = await import(join(process.cwd(), "./hyper.config.js"));
-// }
+let cfg = {};
 
-program
-  .version(pkg.version)
+/** Check wether server config exists */
+if(existsSync(join(process.cwd(), "hyper.config.js"))) {
+  console.log("INFO: Found hyper.config.js...");
+  cfg = await import(join(process.cwd(), "hyper.config.js"));
+}
+
+/** Server CLI */
+program.version(pkg.version)
   .option("--hot", "Enable hot-reloading.", false)
-  .option("-h, --hostname <hostname>", "Server's hostname. When `0.0.0.0` serve both localhost and to local network.", process.env.HOSTNAME || "localhost")
-  .option("-p, --port <port>", "Port to listen to. Needs sudo to assign ports below 3000.", process.env.PORT || 3000)
-  .option("-r, --root <root>", "Document root folder to serve.", process.env.ROOT || process.cwd())
-  //.argument("<root>", "Folder to serve. Defaults to current working directory.", process.cwd())
+  .option("-h, --hostname <hostname>", "Server's hostname. When `0.0.0.0` serve both localhost and to local network.", process.env.HOSTNAME || ("hostname" in cfg && cfg.hostname) || "0.0.0.0")
+  .option("-p, --port <port>", "Port to listen to. Needs sudo to assign ports below 3000.", process.env.PORT || ("port" in cfg && cfg.port) || 3000)
+  .option("-r, --root <root>", "Document root folder to serve.", process.env.ROOT || ("root" in cfg && cfg.root) || process.cwd())
   .parse(process.argv);
 
+/** Parse CLI argv */
 const opts = program.opts();
-// const args = program.args();
 
 /** Hot-Reload command */
 export const HOT_CMD = "/hot";
@@ -38,8 +41,8 @@ export const watcher = opts.hot && watch(
   ROOT,
   { recursive: true },
   (eventType, filePath) => {
-    console.log(`FSWatcher: '${eventType}' on '${filePath}'`);
-    server.publish(HOT_CMD, `File '${filePath}' fired '${eventType}' event. You have to reload!`);
+    console.log(`INFO: FSWatcher detected '${eventType}' on '${filePath}'`);
+    server.publish(HOT_CMD, `File '${filePath}' fired '${eventType}' event. You must to reload!`);
   }
 );
 
@@ -63,7 +66,7 @@ export const server = Bun.serve({
           element(head) {
             head.append(
               `<script>
-                const socket = new WebSocket("ws://${HOSTNAME}:${PORT}${HOT_CMD}");
+                const socket = new WebSocket("ws://${"0.0.0.0" === HOSTNAME ? "127.0.0.1" : HOSTNAME}:${PORT}${HOT_CMD}");
                 socket.addEventListener("message", event => window.location.reload());
               </script>`,
               { html: true }
@@ -85,19 +88,34 @@ export const server = Bun.serve({
   },
   hostname: HOSTNAME,
   port: PORT,
+  development: process.env.NODE_ENV === "production",
   websocket: {
     open: (ws) => {
       ws.subscribe(HOT_CMD);
-      console.log(`WebSocket: Client subscribed to '${HOT_CMD}'`);
+      console.log(`INFO: Subscribed WebSocket Client to '${HOT_CMD}'.`);
     },
     message: (ws, message) => {
-      console.log(`WebSocket: Client trying to communicate: `, message);
+      console.log(`INFO: Client trying to communicate with me. `, message);
     },
     close: (ws) => {
       ws.unsubscribe(HOT_CMD);
-      console.log(`WebSocket: Client disconnected...`);
+      console.log(`INFO: WebSocket Client disconnected.`);
     }
   }
 });
 
-console.log(`\nStarted Web Server at: ${server.protocol}://${server.hostname}:${server.port}\n`);
+/** Get Local IP Address */
+let domain = "";
+if("0.0.0.0" === server.hostname) {
+  const ip = await $`ipconfig getifaddr en0`.text();
+  domain = `${server.protocol}://127.0.0.1:${server.port}/
+                         ${server.protocol}://${ip.trim()}:${server.port}/`
+}
+else {
+  domain = `${server.protocol}://${server.hostname}:${server.port}/`;
+}
+
+console.log(`
+  Started web server at: ${domain}
+  Serving document root: ${resolve(process.cwd(), ROOT)}
+`);
