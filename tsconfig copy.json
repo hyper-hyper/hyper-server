@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment",
+    "jsxImportSource": "./src/jsx-pragma.ts",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "dom.asynciterable",
+      "deno.ns",
+      "deno.window",
+      "deno.unstable"
+    ],
+    "strict": true,
+    "target": "esnext",
+    "module": "esnext",
+    "paths": {
+      "/*": [ "./src/*" ]
+    }
+  },
+  "include": [ "./src" ]
+}

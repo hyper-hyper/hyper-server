@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 import { $ } from "bun";
 import { existsSync, watch } from "node:fs";
 import { join, resolve } from "node:path";

@@ -1,17 +1,17 @@
 {
   "compilerOptions": {
-    "lib": ["ESNext","DOM","DOM.Iterable"],
+    "lib": [ "DOM", "DOM.Iterable" ],
+    "module": "ESNext",
     "target": "ESNext",
-    "module": "NodeNext",
-    "moduleDetection": "force",
+    "strict": true,
+    "removeComments": true,
     "allowJs": true,
     "allowImportingTsExtensions": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["bun-types"],
-    "baseUrl": "."
-  }
+    "jsx": "react-native",
+    "jsxImportSource": "react",
+    "plugins": [{ "transform": "./src/jsx.ts" }]
+  },
+  "include": [ "./src/**/*" ]
 }
