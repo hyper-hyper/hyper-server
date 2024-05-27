@@ -9,21 +9,26 @@
   },
   "private": "true",
   "type": "module",
-  "main": "index.js",
+  "main": "mod.ts",
   "bin": {
-    "hyper-server": "./bin/hyper-server"
+    "hyper-server": "./bin/hyper-server",
+    "hsrv": "./bin/srv"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/hyper-hyper/hyper-server.git"
   },
   "scripts": {
+    "clean": "rm -rf node_modules bun.lockb bunfig.toml",
     "dev": "bun ./src/server.js --hot --port 9090 --root ./src",
     "build": "bun build ./src/server.js --compile --minify --outfile bin/hyper-server"
   },
   "dependencies": {
-    "bun": "^1.0.28",
-    "bun-types": "^1.0.28",
-    "commander": "^12.0.0"
+    "@cliffy/ansi": "npm:@jsr/cliffy__ansi@1.0.0-rc.4",
+    "@cliffy/command": "npm:@jsr/cliffy__command@1.0.0-rc.4",
+    "@std/net": "npm:@jsr/std__net@0.224.1",
+    "@types/bun": "^1.1.3",
+    "bun": "^1.1.10",
+    "deno": "^0.1.1"
   }
 }
