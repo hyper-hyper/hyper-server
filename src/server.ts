@@ -61,8 +61,11 @@ export const server = Deno.serve({
   handler: (request: Request, info: Deno.ServeHandlerInfo) => {
     return new Response("OK", { status: 200 });
   },
-  onError: (error: unknown) => {
-    return new Response("ERRROR", { status: 500 });
+  onError: (error) => {
+    if( "ENOENT" === error.code ) {
+      return new Response( "404 - Not Found", { status: 404 } );
+    }
+    return new Response("ERROR", { status: 500 });
   },
   onListen: (localAddr: Deno.NetAddr) => {
     const { transport, hostname, port } = localAddr;

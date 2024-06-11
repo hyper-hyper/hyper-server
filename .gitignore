@@ -1,3 +1,4 @@
+_
 .build
 .cache
 .env
@@ -5,7 +6,6 @@
 .yarn
 *.local
 *.log
-!
 build
 bun.lockb
 bunfig.toml
