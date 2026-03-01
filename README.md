@@ -32,12 +32,12 @@ You can run `hyper-server --help` to see the help wizard.
 
 - [x] ~~Hot-reloading (inject client script)~~
 - [x] ~~Server configuration file~~
-- [x] Watch mode (Websockets)
+- [x] Live-Reload for development
 - [x] TypeScript support at runtime
 - [ ] JSX support at runtime
-- [ ] PHP support at runtime
-- [ ] SSL support
-- [ ] Self-Discovery with Bonjour
+- [ ] ~~PHP support at runtime~~
+- [ ] SSL support & self-signed certificates
+- [ ] Bonjour Service for broadcasting self-discovery
 - [ ] ~~Run commands on remote~~
 - [ ] ~~Event Emitter and Key binding~~
 
