@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookmarklet Generator</title>
+  <link href="https://api.fontshare.com/v2/css?f[]=jet-brains-mono@1,2&f[]=general-sans@1,2&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@tailwindcss/browser@4.1.7"></script>
+  <style type="text/tailwindcss">
+    @custom-variant dark (&:where(.dark, .dark *));
+
+    :root {
+      --font-general-sans: "General Sans";
+      --font-jetbrains-mono: "JetBrains Mono";
+      --radius: 0.625rem;
+      --background: oklch(1 0 0);
+      --foreground: oklch(0.141 0.005 285.823);
+      --card: oklch(1 0 0);
+      --card-foreground: oklch(0.141 0.005 285.823);
+      --popover: oklch(1 0 0);
+      --popover-foreground: oklch(0.141 0.005 285.823);
+      --primary: oklch(0.21 0.006 285.885);
+      --primary-foreground: oklch(0.985 0 0);
+      --secondary: oklch(0.967 0.001 286.375);
+      --secondary-foreground: oklch(0.21 0.006 285.885);
+      --muted: oklch(0.967 0.001 286.375);
+      --muted-foreground: oklch(0.552 0.016 285.938);
+      --accent: oklch(0.967 0.001 286.375);
+      --accent-foreground: oklch(0.21 0.006 285.885);
+      --destructive: oklch(0.577 0.245 27.325);
+      --border: oklch(0.92 0.004 286.32);
+      --input: oklch(0.92 0.004 286.32);
+      --ring: oklch(0.705 0.015 286.067);
+      --chart-1: oklch(0.646 0.222 41.116);
+      --chart-2: oklch(0.6 0.118 184.704);
+      --chart-3: oklch(0.398 0.07 227.392);
+      --chart-4: oklch(0.828 0.189 84.429);
+      --chart-5: oklch(0.769 0.188 70.08);
+      --sidebar: oklch(0.985 0 0);
+      --sidebar-foreground: oklch(0.141 0.005 285.823);
+      --sidebar-primary: oklch(0.21 0.006 285.885);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.967 0.001 286.375);
+      --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
+      --sidebar-border: oklch(0.92 0.004 286.32);
+      --sidebar-ring: oklch(0.705 0.015 286.067);
+    }
+
+    .dark {
+      --background: oklch(0.141 0.005 285.823);
+      --foreground: oklch(0.985 0 0);
+      --card: oklch(0.21 0.006 285.885);
+      --card-foreground: oklch(0.985 0 0);
+      --popover: oklch(0.21 0.006 285.885);
+      --popover-foreground: oklch(0.985 0 0);
+      --primary: oklch(0.92 0.004 286.32);
+      --primary-foreground: oklch(0.21 0.006 285.885);
+      --secondary: oklch(0.274 0.006 286.033);
+      --secondary-foreground: oklch(0.985 0 0);
+      --muted: oklch(0.274 0.006 286.033);
+      --muted-foreground: oklch(0.705 0.015 286.067);
+      --accent: oklch(0.274 0.006 286.033);
+      --accent-foreground: oklch(0.985 0 0);
+      --destructive: oklch(0.704 0.191 22.216);
+      --border: oklch(1 0 0 / 10%);
+      --input: oklch(1 0 0 / 15%);
+      --ring: oklch(0.552 0.016 285.938);
+      --chart-1: oklch(0.488 0.243 264.376);
+      --chart-2: oklch(0.696 0.17 162.48);
+      --chart-3: oklch(0.769 0.188 70.08);
+      --chart-4: oklch(0.627 0.265 303.9);
+      --chart-5: oklch(0.645 0.246 16.439);
+      --sidebar: oklch(0.21 0.006 285.885);
+      --sidebar-foreground: oklch(0.985 0 0);
+      --sidebar-primary: oklch(0.488 0.243 264.376);
+      --sidebar-primary-foreground: oklch(0.985 0 0);
+      --sidebar-accent: oklch(0.274 0.006 286.033);
+      --sidebar-accent-foreground: oklch(0.985 0 0);
+      --sidebar-border: oklch(1 0 0 / 10%);
+      --sidebar-ring: oklch(0.552 0.016 285.938);
+    }
+
+    @theme inline {
+      --font-sans: var(--font-general-sans);
+      --font-mono: var(--font-jetbrains-mono);
+      --color-background: var(--background);
+      --color-foreground: var(--foreground);
+      --color-card: var(--card);
+      --color-card-foreground: var(--card-foreground);
+      --color-popover: var(--popover);
+      --color-popover-foreground: var(--popover-foreground);
+      --color-primary: var(--primary);
+      --color-primary-foreground: var(--primary-foreground);
+      --color-secondary: var(--secondary);
+      --color-secondary-foreground: var(--secondary-foreground);
+      --color-muted: var(--muted);
+      --color-muted-foreground: var(--muted-foreground);
+      --color-accent: var(--accent);
+      --color-accent-foreground: var(--accent-foreground);
+      --color-destructive: var(--destructive);
+      --color-destructive-foreground: var(--destructive-foreground);
+      --color-border: var(--border);
+      --color-input: var(--input);
+      --color-ring: var(--ring);
+      --color-chart-1: var(--chart-1);
+      --color-chart-2: var(--chart-2);
+      --color-chart-3: var(--chart-3);
+      --color-chart-4: var(--chart-4);
+      --color-chart-5: var(--chart-5);
+      --radius-sm: calc(var(--radius) - 4px);
+      --radius-md: calc(var(--radius) - 2px);
+      --radius-lg: var(--radius);
+      --radius-xl: calc(var(--radius) + 4px);
+      --color-sidebar: var(--sidebar);
+      --color-sidebar-foreground: var(--sidebar-foreground);
+      --color-sidebar-primary: var(--sidebar-primary);
+      --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+      --color-sidebar-accent: var(--sidebar-accent);
+      --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+      --color-sidebar-border: var(--sidebar-border);
+      --color-sidebar-ring: var(--sidebar-ring);
+    }
+
+    @layer base {
+      * {
+        @apply border-border outline-ring/50;
+      }
+      body {
+        @apply bg-background text-foreground;
+      }
+    }
+  </style>
+
+  <style>
+    #editor {
+      height: 400px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid hsl(var(--border));
+    }
+
+    .minified-code, .bookmarklet-href {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 14px;
+      resize: none;
+    }
+
+    .bookmarklet-href {
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      font-weight: 500;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+      height: 2.5rem;
+      padding-left: 1rem;
+      padding-right: 1rem;
+      transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+    }
+
+    .btn-primary {
+      background-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+    }
+
+    .btn-primary:hover {
+      background-color: hsl(var(--primary) / 0.9);
+    }
+
+    .btn-secondary {
+      background-color: hsl(var(--secondary));
+      color: hsl(var(--secondary-foreground));
+    }
+
+    .btn-secondary:hover {
+      background-color: hsl(var(--secondary) / 0.8);
+    }
+
+    .btn-destructive {
+      background-color: hsl(var(--destructive));
+      color: hsl(var(--destructive-foreground));
+    }
+
+    .btn-destructive:hover {
+      background-color: hsl(var(--destructive) / 0.9);
+    }
+
+    .btn-accent {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+    }
+
+    .btn-accent:hover {
+      background-color: hsl(var(--accent) / 0.8);
+    }
+  </style>
+</head>
+<body class="dark bg-background text-foreground min-h-screen p-4 md:p-8">
+  <div class="container max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8 text-center">Bookmarklet Generator</h1>
+    
+    <div class="space-y-6">
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+        <div class="space-y-1.5 mb-4">
+          <h3 class="text-lg font-semibold leading-none tracking-tight">JavaScript Code</h3>
+          <p class="text-sm text-muted-foreground">Write your bookmarklet code here</p>
+        </div>
+        <div id="editor" class="mb-4 mt-6 max-h-[650px] overflow-x-auto rounded-xl bg-zinc-950 py-4 dark:bg-zinc-900"></div>
+      </div>
+      
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+        <div class="space-y-1.5 mb-4">
+          <h3 class="text-lg font-semibold leading-none tracking-tight">Minified Code</h3>
+          <p class="text-sm text-muted-foreground">Your code after minification</p>
+        </div>
+        <textarea id="minifiedCode" class="minified-code w-full h-24 bg-muted text-foreground rounded-md border border-input px-3 py-2" readonly></textarea>
+      </div>
+      
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+        <div class="space-y-1.5 mb-4">
+          <h3 class="text-lg font-semibold leading-none tracking-tight">Bookmarklet Href Code</h3>
+          <p class="text-sm text-muted-foreground">The full code that will be used in the bookmarklet's href attribute</p>
+        </div>
+        <input id="bookmarkletHref" class="bookmarklet-href w-full bg-muted text-foreground rounded-md border border-input px-3 py-2" readonly />
+      </div>
+      
+      <div class="flex flex-col sm:flex-row gap-3 mb-6">
+        <button id="generateBtn" class="btn btn-primary">
+          Generate Bookmarklet
+        </button>
+        <button id="copyMinifiedBtn" class="btn btn-secondary">
+          Copy Minified Code
+        </button>
+        <button id="copyHrefBtn" class="btn btn-secondary">
+          Copy Href Code
+        </button>
+        <button id="clearBtn" class="btn btn-destructive">
+          Clear
+        </button>
+      </div>
+      
+      <div id="resultContainer" class="hidden rounded-lg border bg-card text-card-foreground shadow-sm p-6 mb-6">
+        <div class="space-y-1.5 mb-4">
+          <h3 class="text-lg font-semibold leading-none tracking-tight">Your Bookmarklet</h3>
+          <p class="text-sm text-muted-foreground">Drag this link to your bookmarks bar or click to test</p>
+        </div>
+        <div class="flex items-center justify-center">
+          <a id="bookmarkletLink" class="btn btn-accent">
+            Bookmarklet
+          </a>
+        </div>
+      </div>
+      
+      <div id="errorContainer" class="hidden rounded-lg border border-destructive bg-destructive/10 p-6 mb-6">
+        <div class="space-y-1.5">
+          <h3 class="text-lg font-semibold leading-none tracking-tight text-destructive">Error</h3>
+          <p id="errorMessage" class="font-mono text-sm"></p>
+        </div>
+      </div>
+      
+      <div class="rounded-lg border bg-card text-card-foreground shadow-sm p-6">
+        <div class="space-y-1.5 mb-4">
+          <h3 class="text-lg font-semibold leading-none tracking-tight">Instructions</h3>
+          <p class="text-sm text-muted-foreground">How to use this bookmarklet generator</p>
+        </div>
+        <ol class="list-decimal list-inside space-y-2 text-sm">
+          <li>Enter your JavaScript code in the editor above</li>
+          <li>Click "Generate Bookmarklet" to minify and create a bookmarklet</li>
+          <li>Drag the resulting bookmarklet to your bookmarks bar</li>
+          <li>Navigate to any website and click the bookmarklet to run your code</li>
+        </ol>
+        <div class="mt-4 p-3 rounded-md bg-accent/50 border border-accent">
+          <p class="text-sm text-accent-foreground">
+            <strong>Current Example:</strong> Ripper - Touch-optimized element extractor with optimized CSS output. First tap highlights an element, second tap extracts it with only the necessary styles. Now with a Cancel button in highlighting mode.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/terser@5.39.2/dist/bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
+  <script>
+    const exampleCode = `(() => {
+  // State to track the currently highlighted element
+  let highlightedElement = null;
+  let isOverlayVisible = false;
+  let isHighlightMode = false;
+
+  // Create overlay elements once
+  const overlay = document.createElement('div');
+  const textarea = document.createElement('textarea');
+  const buttonContainer = document.createElement('div');
+  const copyButton = document.createElement('button');
+  const closeButton = document.createElement('button');
+  const notification = document.createElement('div');
+  
+  // Create cancel button for highlighting mode
+  const cancelButton = document.createElement('button');
+
+  // Function to set up the overlay
+  const setupOverlay = () => {
+    // Style the overlay
+    overlay.style.position = 'fixed';
+    overlay.style.inset = '0';
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.9)';
+    overlay.style.zIndex = '2147483646'; // Max z-index minus 1
+    overlay.style.display = 'none';
+    overlay.style.flexDirection = 'column';
+    overlay.style.padding = '20px';
+    overlay.style.fontFamily = 'monospace';
+
+    // Style the textarea
+    textarea.style.flex = '1';
+    textarea.style.padding = '15px';
+    textarea.style.margin = '10px 0';
+    textarea.style.backgroundColor = '#1e1e1e';
+    textarea.style.color = '#f8f8f8';
+    textarea.style.border = '1px solid #333';
+    textarea.style.borderRadius = '4px';
+    textarea.style.fontSize = '14px';
+    textarea.style.resize = 'none';
+    textarea.style.outline = 'none';
+    textarea.style.whiteSpace = 'pre';
+    textarea.style.overflowY = 'auto'; // Make sure it's scrollable
+    textarea.style.height = 'calc(100% - 80px)'; // Ensure it doesn't overflow
+
+    // Style the button container
+    buttonContainer.style.position = 'absolute';
+    buttonContainer.style.top = '20px';
+    buttonContainer.style.right = '20px';
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.gap = '10px';
+    buttonContainer.style.zIndex = '2147483647'; // Max z-index to ensure buttons are clickable
+
+    // Style the copy button
+    copyButton.innerHTML = '<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect width=\"14\" height=\"14\" x=\"8\" y=\"8\" rx=\"2\" ry=\"2\"/><path d=\"M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2\"/></svg>';
+    copyButton.style.backgroundColor = '#2563eb';
+    copyButton.style.color = 'white';
+    copyButton.style.border = 'none';
+    copyButton.style.borderRadius = '4px';
+    copyButton.style.padding = '8px';
+    copyButton.style.cursor = 'pointer';
+    copyButton.style.display = 'flex';
+    copyButton.style.alignItems = 'center';
+    copyButton.style.justifyContent = 'center';
+    copyButton.style.zIndex = '2147483647'; // Ensure it's clickable
+    copyButton.title = 'Copy to clipboard';
+
+    // Style the close button
+    closeButton.innerHTML = '<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>';
+    closeButton.style.backgroundColor = '#ef4444';
+    closeButton.style.color = 'white';
+    closeButton.style.border = 'none';
+    closeButton.style.borderRadius = '4px';
+    closeButton.style.padding = '8px';
+    closeButton.style.cursor = 'pointer';
+    closeButton.style.display = 'flex';
+    closeButton.style.alignItems = 'center';
+    closeButton.style.justifyContent = 'center';
+    closeButton.style.zIndex = '2147483647'; // Ensure it's clickable
+    closeButton.title = 'Close';
+    
+    // Style the cancel button for highlighting mode
+    cancelButton.innerHTML = '<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M18 6 6 18\"/><path d=\"m6 6 12 12\"/></svg>';
+    cancelButton.style.position = 'fixed';
+    cancelButton.style.top = '20px';
+    cancelButton.style.right = '20px';
+    cancelButton.style.backgroundColor = '#ef4444';
+    cancelButton.style.color = 'white';
+    cancelButton.style.border = 'none';
+    cancelButton.style.borderRadius = '4px';
+    cancelButton.style.padding = '8px';
+    cancelButton.style.cursor = 'pointer';
+    cancelButton.style.display = 'none'; // Hidden by default
+    cancelButton.style.alignItems = 'center';
+    cancelButton.style.justifyContent = 'center';
+    cancelButton.style.zIndex = '2147483647'; // Max z-index
+    cancelButton.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.3)';
+    cancelButton.title = 'Cancel (Esc)';
+    
+    // Add a data attribute to identify Ripper elements
+    overlay.dataset.ripperElement = 'true';
+    textarea.dataset.ripperElement = 'true';
+    buttonContainer.dataset.ripperElement = 'true';
+    copyButton.dataset.ripperElement = 'true';
+    closeButton.dataset.ripperElement = 'true';
+    notification.dataset.ripperElement = 'true';
+    cancelButton.dataset.ripperElement = 'true';
+
+    // Style the notification
+    notification.style.position = 'fixed';
+    notification.style.top = '20px';
+    notification.style.left = '50%';
+    notification.style.transform = 'translateX(-50%)';
+    notification.style.backgroundColor = '#10b981';
+    notification.style.color = 'white';
+    notification.style.padding = '10px 20px';
+    notification.style.borderRadius = '4px';
+    notification.style.zIndex = '2147483647'; // Max z-index
+    notification.style.display = 'none';
+    notification.style.boxShadow = '0 2px 10px rgba(0, 0, 0, 0.2)';
+
+    // Add event listeners
+    copyButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event from bubbling
+      navigator.clipboard.writeText(textarea.value)
+        .then(() => showNotification('Copied to clipboard!'))
+        .catch(err => console.error('Failed to copy: ', err));
+    });
+
+    closeButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event from bubbling
+      hideOverlay();
+      cancelHighlightMode(); // Also cancel highlight mode when closing overlay
+    });
+    
+    // Add event listener for cancel button
+    cancelButton.addEventListener('click', (e) => {
+      e.stopPropagation(); // Prevent event from bubbling
+      e.preventDefault(); // Prevent default behavior
+      cancelHighlightMode();
+    });
+
+    // Prevent clicks on the overlay from propagating
+    overlay.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Prevent clicks on the textarea from propagating
+    textarea.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    // Assemble the overlay
+    buttonContainer.appendChild(copyButton);
+    buttonContainer.appendChild(closeButton);
+    overlay.appendChild(textarea);
+    overlay.appendChild(buttonContainer);
+    document.body.appendChild(overlay);
+    document.body.appendChild(notification);
+    document.body.appendChild(cancelButton);
+  };
+
+  // Function to show notification
+  const showNotification = (message) => {
+    notification.textContent = message;
+    notification.style.display = 'block';
+    setTimeout(() => {
+      notification.style.display = 'none';
+    }, 2000);
+  };
+
+  // Function to show the overlay with content
+  const showOverlay = (content) => {
+    textarea.value = content;
+    overlay.style.display = 'flex';
+    isOverlayVisible = true;
+    
+    // Hide cancel button when overlay is shown
+    cancelButton.style.display = 'none';
+    
+    // Focus the textarea to make scrolling work better on mobile
+    setTimeout(() => {
+      textarea.focus();
+    }, 100);
+  };
+
+  // Function to hide the overlay
+  const hideOverlay = () => {
+    overlay.style.display = 'none';
+    isOverlayVisible = false;
+    
+    // Also cancel highlight mode when closing overlay
+    cancelHighlightMode();
+  };
+  
+  // Function to enter highlight mode
+  const enterHighlightMode = () => {
+    isHighlightMode = true;
+    cancelButton.style.display = 'flex'; // Show cancel button
+    showNotification('Tap an element to extract it, or press Cancel to exit');
+  };
+  
+  // Function to cancel highlight mode
+  const cancelHighlightMode = () => {
+    // Unhighlight any highlighted element
+    if (highlightedElement) {
+      unhighlightElement(highlightedElement);
+    }
+    
+    // Reset state
+    highlightedElement = null;
+    isHighlightMode = false;
+    
+    // Hide cancel button
+    cancelButton.style.display = 'none';
+  };
+
+  // Function to check if an element is part of the Ripper UI
+  const isRipperElement = (element) => {
+    return element.dataset && element.dataset.ripperElement === 'true' || 
+           element === cancelButton || 
+           element.closest('[data-ripper-element=\"true\"]');
+  };
+
+  // Function to highlight the element
+  const highlightElement = (element) => {
+    // Don't highlight Ripper UI elements
+    if (isRipperElement(element)) return;
+    
+    // Remove highlight from previous element if exists
+    if (highlightedElement) {
+      unhighlightElement(highlightedElement);
+    }
+    
+    // Store original outline if it exists
+    element._originalOutline = element.style.outline;
+    element._originalOutlineOffset = element.style.outlineOffset;
+    
+    // Apply highlight
+    element.style.outline = '3px solid #3b82f6';
+    element.style.outlineOffset = '2px';
+    
+    // Store the highlighted element
+    highlightedElement = element;
+    
+    // Enter highlight mode if not already in it
+    if (!isHighlightMode) {
+      enterHighlightMode();
+    }
+  };
+
+  // Function to remove the highlight
+  const unhighlightElement = (element) => {
+    // Restore original outline if it existed
+    if (element._originalOutline !== undefined) {
+      element.style.outline = element._originalOutline;
+      element.style.outlineOffset = element._originalOutlineOffset;
+      
+      // Clean up if style is empty
+      if (element.style.outline === '' && element.getAttribute('style') === '') {
+        element.removeAttribute('style');
+      }
+    } else {
+      element.style.outline = '';
+      element.style.outlineOffset = '';
+      
+      // Clean up if style is empty
+      if (element.getAttribute('style') === '') {
+        element.removeAttribute('style');
+      }
+    }
+    
+    // Clear the highlighted element reference
+    if (highlightedElement === element) {
+      highlightedElement = null;
+    }
+  };
+
+  // Function to handle touch/click on an element
+  const handleElementInteraction = (event) => {
+    // If overlay is visible, don't do anything with page elements
+    if (isOverlayVisible) return;
+    
+    const target = event.target;
+    
+    // Don't process if the target is a Ripper UI element
+    if (isRipperElement(target)) {
+      // If it's the cancel button, cancel highlight mode
+      if (target === cancelButton) {
+        event.preventDefault();
+        event.stopPropagation();
+        cancelHighlightMode();
+      }
+      return;
+    }
+    
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // If element is already highlighted, extract it
+    if (target === highlightedElement) {
+      processElement(target);
+      unhighlightElement(target);
+      cancelHighlightMode(); // Exit highlight mode after extraction
+    } else {
+      // Otherwise, highlight it
+      highlightElement(target);
+    }
+  };
+
+  // Function to handle mouseover for desktop
+  const handleMouseOver = (event) => {
+    // Only highlight if we're in highlight mode and not over a Ripper element
+    if (!isHighlightMode || isOverlayVisible || isRipperElement(event.target)) return;
+    
+    // Don't highlight if the target is already highlighted
+    if (event.target === highlightedElement) return;
+    
+    highlightElement(event.target);
+  };
+
+  // Function to handle mouseout for desktop
+  const handleMouseOut = (event) => {
+    // Only unhighlight if we're in highlight mode and not over a Ripper element
+    if (!isHighlightMode || isOverlayVisible || isRipperElement(event.target)) return;
+    
+    // Only unhighlight if this is the currently highlighted element
+    if (event.target === highlightedElement) {
+      unhighlightElement(event.target);
+    }
+  };
+
+  // Function to handle click for desktop
+  const handleClick = (event) => {
+    // If overlay is visible, don't do anything with page elements
+    if (isOverlayVisible) return;
+    
+    const target = event.target;
+    
+    // Don't process if the target is a Ripper UI element
+    if (isRipperElement(target)) {
+      // If it's the cancel button, cancel highlight mode
+      if (target === cancelButton) {
+        event.preventDefault();
+        event.stopPropagation();
+        cancelHighlightMode();
+      }
+      return;
+    }
+    
+    // Prevent default behavior
+    event.preventDefault();
+    event.stopPropagation();
+    
+    // Process the element
+    processElement(target);
+    
+    // Clean up
+    if (highlightedElement) {
+      unhighlightElement(highlightedElement);
+    }
+    
+    // Exit highlight mode
+    cancelHighlightMode();
+  };
+
+  // Function to process the clicked element and its children
+  const processElement = (element) => {
+    const styles = extractStylesFromStylesheets(element);
+    const customProperties = extractCustomProperties(element);
+    const usedVariables = findUsedVariables(styles);
+    const groupedStyles = groupStyles(styles, customProperties, usedVariables);
+    const sortedCSS = sortCSS(groupedStyles);
+    const html = "<style>\\n" + sortedCSS + "\\n</style>\\n" + element.outerHTML;
+    
+    // Show the overlay with the extracted code
+    showOverlay(html);
+    
+    // Also log to console for desktop users
+    console.log(html);
+  };
+
+  // Function to find CSS variables used in the styles
+  const findUsedVariables = (styles) => {
+    const usedVariables = new Set();
+    
+    // Check all style values for var() usage
+    for (const selector in styles) {
+      for (const property in styles[selector]) {
+        const value = styles[selector][property];
+        
+        // Extract variable names from var() functions
+        const varRegex = /var\$$\\s*(--[\\w-]+)\\s*(?:,\\s*[^)]+)?\$$/g;
+        let match;
+        
+        while ((match = varRegex.exec(value)) !== null) {
+          usedVariables.add(match[1]); // Add the variable name to the set
+        }
+      }
+    }
+    
+    return usedVariables;
+  };
+
+  // Function to extract styles of an element and its children from stylesheets
+  const extractStylesFromStylesheets = (element) => {
+    const styles = {};
+    const elements = [element].concat(
+      Array.from(element.querySelectorAll("*"))
+    );
+    const styleSheets = Array.from(document.styleSheets);
+
+    styleSheets.forEach((sheet) => {
+      try {
+        const rules = Array.from(sheet.cssRules || []);
+        rules.forEach((rule) => {
+          if (rule instanceof CSSStyleRule) {
+            elements.forEach((el) => {
+              if (el.matches(rule.selectorText)) {
+                const selector = rule.selectorText;
+                if (!styles[selector]) {
+                  styles[selector] = {};
+                }
+                for (let i = 0; i < rule.style.length; i++) {
+                  const property = rule.style[i];
+                  styles[selector][property] =
+                    rule.style.getPropertyValue(property);
+                }
+              }
+            });
+          }
+        });
+      } catch (e) {
+        // Silently fail for cross-origin stylesheets
+      }
+    });
+
+    return styles;
+  };
+
+  // Function to extract custom properties (CSS variables) from the elements
+  const extractCustomProperties = (element) => {
+    const customProperties = {};
+    const elements = [element].concat(
+      Array.from(element.querySelectorAll("*"))
+    );
+
+    elements.forEach((el) => {
+      const computedStyles = window.getComputedStyle(el);
+      for (let i = 0; i < computedStyles.length; i++) {
+        const styleName = computedStyles[i];
+        if (styleName.startsWith("--")) {
+          customProperties[styleName] =
+            computedStyles.getPropertyValue(styleName);
+        }
+      }
+    });
+
+    return customProperties;
+  };
+
+  // Function to group styles and custom properties
+  const groupStyles = (styles, customProperties, usedVariables) => {
+    const rootProperties = {};
+    const groupedStyles = {};
+
+    // Only include variables that are actually used
+    for (const prop in customProperties) {
+      if (usedVariables.has(prop)) {
+        rootProperties[prop] = customProperties[prop];
+      }
+    }
+
+    // Add any variables that are referenced by other variables
+    let foundNew = true;
+    while (foundNew) {
+      foundNew = false;
+      
+      for (const prop in rootProperties) {
+        const value = rootProperties[prop];
+        
+        // Check if this value references other variables
+        const varRegex = /var\$$\\s*(--[\\w-]+)\\s*(?:,\\s*[^)]+)?\$$/g;
+        let match;
+        
+        while ((match = varRegex.exec(value)) !== null) {
+          const referencedVar = match[1];
+          
+          // If the referenced variable exists in customProperties but not in rootProperties yet
+          if (customProperties[referencedVar] && !rootProperties[referencedVar]) {
+            rootProperties[referencedVar] = customProperties[referencedVar];
+            foundNew = true; // We found a new variable, so we need to check again
+          }
+        }
+      }
+    }
+
+    // Group regular styles
+    for (const selector in styles) {
+      for (const styleName in styles[selector]) {
+        if (!styleName.startsWith("--")) {
+          if (!groupedStyles[selector]) {
+            groupedStyles[selector] = {};
+          }
+          groupedStyles[selector][styleName] = styles[selector][styleName];
+        }
+      }
+    }
+
+    return { root: rootProperties, others: groupedStyles };
+  };
+
+  // Function to sort CSS by tag name and class name
+  const sortCSS = (styles) => {
+    let cssString = "";
+    
+    // Only add :root section if there are variables to include
+    if (Object.keys(styles.root).length > 0) {
+      cssString += ":root {\\n";
+      for (const prop in styles.root) {
+        cssString += \`  \${prop}: \${styles.root[prop]};\\n\`;
+      }
+      cssString += "}\\n\\n";
+    }
+
+    const sortedSelectors = Object.keys(styles.others).sort();
+
+    sortedSelectors.forEach((selector) => {
+      // Only add selectors that have properties
+      if (Object.keys(styles.others[selector]).length > 0) {
+        cssString += \`\${selector} {\\n\`;
+        for (const prop in styles.others[selector]) {
+          cssString += \`  \${prop}: \${styles.others[selector][prop]};\\n\`;
+        }
+        cssString += "}\\n\\n";
+      }
+    });
+
+    return cssString;
+  };
+
+  // Function to check if device supports touch
+  const isTouchDevice = () => {
+    return ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  };
+
+  // Function to handle keyboard events
+  const handleKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      if (isOverlayVisible) {
+        hideOverlay();
+      } else if (isHighlightMode) {
+        cancelHighlightMode();
+      }
+    }
+  };
+
+  // Function to bind event handlers based on device type
+  const bindEventHandlers = () => {
+    // Set up the overlay first
+    setupOverlay();
+    
+    if (isTouchDevice()) {
+      // For touch devices
+      document.addEventListener('touchstart', handleElementInteraction, { passive: false });
+    } else {
+      // For desktop devices
+      document.addEventListener('mouseover', handleMouseOver);
+      document.addEventListener('mouseout', handleMouseOut);
+      document.addEventListener('click', handleClick);
+    }
+    
+    // Add keyboard shortcut to close overlay or cancel highlight mode (Escape key)
+    document.addEventListener('keydown', handleKeyDown);
+  };
+
+  // Function to unbind event handlers
+  const unbindEventHandlers = () => {
+    if (isTouchDevice()) {
+      document.removeEventListener('touchstart', handleElementInteraction);
+    } else {
+      document.removeEventListener('mouseover', handleMouseOver);
+      document.removeEventListener('mouseout', handleMouseOut);
+      document.removeEventListener('click', handleClick);
+    }
+    
+    document.removeEventListener('keydown', handleKeyDown);
+  };
+
+  // Initialize the Ripper
+  bindEventHandlers();
+
+  // Return a cleanup function
+  return () => {
+    unbindEventHandlers();
+    if (overlay.parentNode) {
+      document.body.removeChild(overlay);
+    }
+    if (notification.parentNode) {
+      document.body.removeChild(notification);
+    }
+    if (cancelButton.parentNode) {
+      document.body.removeChild(cancelButton);
+    }
+  };
+})();`;
+
+    // Initialize Monaco Editor
+    require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' }});
+    require(['vs/editor/editor.main'], function() {
+      // Define a custom theme that matches shadcn/ui dark theme
+      monaco.editor.defineTheme('shadcn-dark', {
+        base: 'vs-dark',
+        inherit: true,
+        rules: [],
+        colors: {
+          'editor.background': '#020817',
+          'editor.foreground': '#e1e7ef',
+          'editorCursor.foreground': '#e1e7ef',
+          'editor.lineHighlightBackground': '#1e293b',
+          'editorLineNumber.foreground': '#64748b',
+          'editor.selectionBackground': '#334155',
+          'editor.inactiveSelectionBackground': '#1e293b',
+          'editorIndentGuide.background': '#334155',
+        }
+      });
+
+      const editor = monaco.editor.create(document.getElementById('editor'), {
+        value: exampleCode,
+        language: 'javascript',
+        theme: 'shadcn-dark',
+        automaticLayout: true,
+        minimap: { enabled: false },
+        scrollBeyondLastLine: false,
+        fontSize: 14,
+        tabSize: 2,
+        renderLineHighlight: 'all',
+        roundedSelection: true,
+        scrollbar: {
+          useShadows: false,
+          verticalHasArrows: true,
+          horizontalHasArrows: true,
+          vertical: 'visible',
+          horizontal: 'visible',
+          verticalScrollbarSize: 12,
+          horizontalScrollbarSize: 12
+        }
+      });
+
+      const minifiedCode = document.getElementById('minifiedCode');
+      const bookmarkletHref = document.getElementById('bookmarkletHref');
+      const generateBtn = document.getElementById('generateBtn');
+      const copyMinifiedBtn = document.getElementById('copyMinifiedBtn');
+      const copyHrefBtn = document.getElementById('copyHrefBtn');
+      const clearBtn = document.getElementById('clearBtn');
+      const resultContainer = document.getElementById('resultContainer');
+      const bookmarkletLink = document.getElementById('bookmarkletLink');
+      const errorContainer = document.getElementById('errorContainer');
+      const errorMessage = document.getElementById('errorMessage');
+      
+      // Generate bookmarklet
+      generateBtn.addEventListener('click', async () => {
+        const code = editor.getValue().trim();
+        
+        if (!code) {
+          showError('Please enter some JavaScript code.');
+          return;
+        }
+        
+        try {
+          // Test if the code can be parsed
+          new Function(code);
+          
+          // Minify the code with Terser
+          const minified = await Terser.minify(code, {
+            compress: true,
+            mangle: {
+              toplevel: true,
+              safari10: true
+            }
+          });
+          
+          if (minified.error) {
+            throw new Error(minified.error.message);
+          }
+          
+          const minifiedJs = minified.code;
+          minifiedCode.value = minifiedJs;
+          
+          // Create bookmarklet URL
+          const bookmarkletCode = `javascript:(function(){${encodeURIComponent(minifiedJs)}})();`;
+          bookmarkletLink.href = bookmarkletCode;
+          bookmarkletLink.textContent = 'Bookmarklet';
+          bookmarkletHref.value = bookmarkletCode;
+          
+          // Show result
+          resultContainer.classList.remove('hidden');
+          errorContainer.classList.add('hidden');
+        } catch (err) {
+          showError(`JavaScript error: ${err.message}`);
+        }
+      });
+      
+      // Copy minified code
+      copyMinifiedBtn.addEventListener('click', () => {
+        if (minifiedCode.value) {
+          navigator.clipboard.writeText(minifiedCode.value)
+            .then(() => {
+              const originalText = copyMinifiedBtn.textContent;
+              copyMinifiedBtn.textContent = 'Copied!';
+              setTimeout(() => {
+                copyMinifiedBtn.textContent = originalText;
+              }, 2000);
+            })
+            .catch(err => {
+              showError(`Failed to copy: ${err.message}`);
+            });
+        }
+      });
+      
+      // Copy href code
+      copyHrefBtn.addEventListener('click', () => {
+        if (bookmarkletHref.value) {
+          navigator.clipboard.writeText(bookmarkletHref.value)
+            .then(() => {
+              const originalText = copyHrefBtn.textContent;
+              copyHrefBtn.textContent = 'Copied!';
+              setTimeout(() => {
+                copyHrefBtn.textContent = originalText;
+              }, 2000);
+            })
+            .catch(err => {
+              showError(`Failed to copy: ${err.message}`);
+            });
+        }
+      });
+      
+      // Clear all
+      clearBtn.addEventListener('click', () => {
+        editor.setValue('');
+        minifiedCode.value = '';
+        bookmarkletHref.value = '';
+        resultContainer.classList.add('hidden');
+        errorContainer.classList.add('hidden');
+      });
+      
+      // Show error message
+      function showError(message) {
+        errorMessage.textContent = message;
+        errorContainer.classList.remove('hidden');
+        resultContainer.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>

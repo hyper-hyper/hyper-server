@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bookmarklet Generator</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.25rem;
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 1.5rem;
+    }
+
+    .editor-section {
+      margin-bottom: 1rem;
+    }
+
+    .editor-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .editor-header label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .editor-header .stats {
+      font-size: 0.7rem;
+      color: #555;
+      font-family: monospace;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 400px;
+      padding: 1rem;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+      color: #c8d6e5;
+      font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace;
+      font-size: 0.8rem;
+      line-height: 1.6;
+      resize: vertical;
+      overflow: auto;
+      tab-size: 2;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    textarea:focus {
+      border-color: #444;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      margin: 1rem 0;
+    }
+
+    button {
+      padding: 0.6rem 1.25rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    button:active { transform: scale(0.97); }
+
+    .btn-primary {
+      background: #fff;
+      color: #000;
+    }
+
+    .btn-primary:hover { background: #ddd; }
+    .btn-primary:disabled {
+      background: #333;
+      color: #666;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      background: #1a1a1a;
+      color: #999;
+      border: 1px solid #333;
+    }
+
+    .btn-secondary:hover { background: #222; color: #ccc; }
+
+    .result-section {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .result-section.visible { display: block; }
+
+    .bookmarklet-bar {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: #111;
+      border: 1px solid #222;
+      border-radius: 8px;
+    }
+
+    .bookmarklet-link {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      background: #f5d020;
+      color: #000;
+      font-weight: 600;
+      font-size: 0.8rem;
+      text-decoration: none;
+      border-radius: 4px;
+      cursor: grab;
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .bookmarklet-link:hover {
+      background: #f0c800;
+    }
+
+    .bookmarklet-link:active {
+      cursor: grabbing;
+    }
+
+    .drag-hint {
+      font-size: 0.75rem;
+      color: #555;
+    }
+
+    .output-meta {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.75rem;
+      font-size: 0.7rem;
+      font-family: monospace;
+      color: #555;
+    }
+
+    .output-meta .saved {
+      color: #4caf50;
+    }
+
+    .output-text {
+      margin-top: 0.75rem;
+      padding: 0.75rem 1rem;
+      background: #0d0d0d;
+      border: 1px solid #1a1a1a;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 0.7rem;
+      color: #666;
+      word-break: break-all;
+      max-height: 120px;
+      overflow-y: auto;
+    }
+
+    .error {
+      color: #e74c3c;
+      font-size: 0.8rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    .error.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Bookmarklet Generator</h1>
+  <p class="subtitle">Edit the source, then generate a minified bookmarklet.</p>
+
+  <div class="editor-section">
+    <div class="editor-header">
+      <label for="source">Source Code</label>
+      <span class="stats" id="sourceStats"></span>
+    </div>
+    <textarea id="source" spellcheck="false"></textarea>
+  </div>
+
+  <div class="actions">
+    <button class="btn-primary" id="generateBtn">Generate Bookmarklet</button>
+    <button class="btn-secondary" id="copyBtn" style="display:none">Copy to Clipboard</button>
+  </div>
+
+  <div class="error" id="error"></div>
+
+  <div class="result-section" id="result">
+    <div class="editor-header">
+      <label>Result</label>
+      <span class="stats" id="resultStats"></span>
+    </div>
+    <div class="bookmarklet-bar">
+      <a class="bookmarklet-link" id="bookmarkletLink" href="#">rip</a>
+      <span class="drag-hint">Drag to your bookmarks bar</span>
+    </div>
+    <div class="output-meta" id="outputMeta"></div>
+    <div class="output-text" id="outputText"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/terser@5/dist/bundle.min.js"></script>
+  <script>
+    const sourceEl = document.getElementById("source");
+    const sourceStats = document.getElementById("sourceStats");
+    const generateBtn = document.getElementById("generateBtn");
+    const copyBtn = document.getElementById("copyBtn");
+    const errorEl = document.getElementById("error");
+    const resultEl = document.getElementById("result");
+    const bookmarkletLink = document.getElementById("bookmarkletLink");
+    const resultStats = document.getElementById("resultStats");
+    const outputMeta = document.getElementById("outputMeta");
+    const outputText = document.getElementById("outputText");
+
+    function autoResize(textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = textarea.scrollHeight + "px";
+    }
+
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + " B";
+      return (bytes / 1024).toFixed(1) + " KB";
+    }
+
+    function updateSourceStats() {
+      const bytes = new TextEncoder().encode(sourceEl.value).length;
+      const lines = sourceEl.value.split("\n").length;
+      sourceStats.textContent = lines + " lines \u00B7 " + formatBytes(bytes);
+    }
+
+    sourceEl.addEventListener("input", function () {
+      updateSourceStats();
+      autoResize(sourceEl);
+    });
+
+    generateBtn.addEventListener("click", async function () {
+      errorEl.classList.remove("visible");
+      resultEl.classList.remove("visible");
+      generateBtn.disabled = true;
+      generateBtn.textContent = "Minifying...";
+
+      try {
+        var code = sourceEl.value;
+        var result = await Terser.minify(code, {
+          compress: {
+            passes: 2,
+            toplevel: true,
+            unsafe: true,
+          },
+          mangle: {
+            toplevel: true,
+          },
+          format: {
+            comments: false,
+          },
+        });
+
+        if (result.error) throw result.error;
+
+        var minified = result.code;
+        var bookmarklet = "javascript:" + encodeURIComponent(minified);
+
+        var originalSize = new TextEncoder().encode(code).length;
+        var minifiedSize = new TextEncoder().encode(minified).length;
+        var ratio = ((1 - minifiedSize / originalSize) * 100).toFixed(1);
+
+        bookmarkletLink.href = bookmarklet;
+        resultStats.textContent = formatBytes(originalSize) + " \u2192 " + formatBytes(minifiedSize) + " (" + ratio + "% smaller)";
+        outputMeta.innerHTML =
+          "<span>Original: " + formatBytes(originalSize) + "</span>" +
+          "<span>Minified: " + formatBytes(minifiedSize) + "</span>" +
+          "<span class=\"saved\">Saved: " + formatBytes(originalSize - minifiedSize) + "</span>";
+        outputText.textContent = bookmarklet;
+        resultEl.classList.add("visible");
+        copyBtn.style.display = "inline-block";
+      } catch (err) {
+        errorEl.textContent = "Minification failed: " + err.message;
+        errorEl.classList.add("visible");
+      } finally {
+        generateBtn.disabled = false;
+        generateBtn.textContent = "Generate Bookmarklet";
+      }
+    });
+
+    copyBtn.addEventListener("click", function () {
+      var bookmarklet = bookmarkletLink.href;
+      navigator.clipboard.writeText(bookmarklet).then(function () {
+        copyBtn.textContent = "Copied!";
+        setTimeout(function () { copyBtn.textContent = "Copy to Clipboard"; }, 1500);
+      });
+    });
+
+    fetch("../src/rip.js")
+      .then(function (res) { return res.text(); })
+      .then(function (code) {
+        sourceEl.value = code;
+        updateSourceStats();
+        autoResize(sourceEl);
+      })
+      .catch(function () {
+        sourceEl.value = "// Failed to load ../src/rip.js\n// Paste your source code here";
+        autoResize(sourceEl);
+      });
+  </script>
+</body>
+</html>

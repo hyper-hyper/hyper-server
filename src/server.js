@@ -24,7 +24,6 @@ export const DEFAULTS = {
   watch: false,
   root: "./public",
   cors: false,
-  gzip: false,
   index: true,
 }
 
@@ -39,7 +38,6 @@ const SCHEMA = {
   key: { alias: "k", description: "Path to SSL private key", default: DEFAULTS.key, type: "string" },
   watch: { alias: "w", description: "Enable Live-Reload", default: DEFAULTS.watch, type: "boolean" },
   cors: { description: "Enable CORS headers", default: DEFAULTS.cors, type: "boolean" },
-  gzip: { alias: "g", description: "Enable gzip compression", default: DEFAULTS.gzip, type: "boolean" },
   index: { alias: "i", description: "Enable directory listing", default: DEFAULTS.index, type: "boolean" },
   help: { alias: "h", description: "Print help and exit", default: false, type: "boolean" },
   version: { alias: "v", description: "Print version and exit", default: false, type: "boolean" },

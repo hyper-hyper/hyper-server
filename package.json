@@ -1,6 +1,6 @@
 {
   "name": "@hyper-hyper/hyper-server",
-  "version": "0.1.2",
+  "version": "1.0.3",
   "description": "Another Web Server powered by Bun.",
   "author": {
     "name": "Mikita Stankiewicz",
@@ -11,29 +11,23 @@
   "type": "module",
   "main": "src/server.js",
   "bin": {
-    "hyper-server": "./bin/hyper-server"
+    "hyper-server": "./bin/hyper-server",
+    "hyper-server-bonjour": "./bin/hyper-server-bonjour"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/hyper-hyper/hyper-server.git"
   },
   "scripts": {
-    "clean": "rm -rf node_modules bun.lockb bunfig.toml",
+    "cleanup": "rm -rf node_modules bun.lockb bunfig.toml",
     "dev": "bun ./src/server.js --hot --port 9090 --root ./src",
     "build": "bun build ./src/server.js --compile --minify --outfile bin/hyper-server",
-    "install-locally": "ln -sf ./bin/hyper-server ~/.local/bin/hyper-server"
+    "install": "ln -sf ./bin/hyper-server ~/.local/bin/hyper-server"
   },
   "dependencies": {
-    "@cliffy/ansi": "npm:@jsr/cliffy__ansi@1.0.0-rc.4",
-    "@cliffy/command": "npm:@jsr/cliffy__command@1.0.0-rc.4",
-    "@std/net": "npm:@jsr/std__net@0.224.1",
-    "@types/bun": "^1.1.11",
-    "bonjour-service": "^1.2.1",
-    "bun": "^1.1.30",
-    "deno": "^0.1.1",
-    "dgram": "^1.0.1",
-    "node": "^22.11.0",
-    "pkgroll": "^2.5.0",
-    "tsx": "^4.19.1"
+    "@types/bun": "^1.4.4",
+    "bonjour-service": "^1.4.4",
+    "bun": "^1.4.4",
+    "dgram": "^1.0.1"
   }
 }
