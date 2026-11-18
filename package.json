@@ -22,7 +22,7 @@
     "cleanup": "rm -rf node_modules bun.lockb bunfig.toml",
     "dev": "bun ./src/server.js --hot --port 9090 --root ./src",
     "build": "bun build ./src/server.js --compile --minify --outfile bin/hyper-server",
-    "install": "ln -sf ./bin/hyper-server ~/.local/bin/hyper-server"
+    "postinstall": "mkdir -p \"$HOME/.local/bin\" && chmod +x ./bin/hyper-server && ln -sf \"$PWD/bin/hyper-server\" \"$HOME/.local/bin/hyper-server\""
   },
   "dependencies": {
     "@types/bun": "^1.4.4",
