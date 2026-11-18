@@ -1,7 +1,7 @@
 {
   "name": "@hyper-hyper/hyper-server",
-  "version": "0.1.0",
-  "description": "Simple web server to serve static content built powered by Bun.",
+  "version": "0.1.2",
+  "description": "Another Web Server powered by Bun.",
   "author": {
     "name": "Mikita Stankiewicz",
     "email": "itsmikita@gmail.com",
@@ -9,10 +9,9 @@
   },
   "private": "true",
   "type": "module",
-  "main": "mod.ts",
+  "main": "src/server.js",
   "bin": {
-    "hyper-server": "./bin/hyper-server",
-    "hsrv": "./bin/srv"
+    "hyper-server": "./bin/hyper-server"
   },
   "repository": {
     "type": "git",
@@ -21,7 +20,8 @@
   "scripts": {
     "clean": "rm -rf node_modules bun.lockb bunfig.toml",
     "dev": "bun ./src/server.js --hot --port 9090 --root ./src",
-    "build": "bun build ./src/server.js --compile --minify --outfile bin/hyper-server"
+    "build": "bun build ./src/server.js --compile --minify --outfile bin/hyper-server",
+    "install-locally": "ln -sf ./bin/hyper-server ~/.local/bin/hyper-server"
   },
   "dependencies": {
     "@cliffy/ansi": "npm:@jsr/cliffy__ansi@1.0.0-rc.4",
